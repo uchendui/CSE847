@@ -1,0 +1,21 @@
+d = importdata("ad_data.mat");
+feat = importdata("feature_name.mat");
+
+pars = [0.01; 0.1; 0.2; 0.3; 0.4; 0.5; 0.6; 0.7; 0.8; 0.9; 1];
+accuracies = [];
+for n =1:size(pars,1)
+    [w,c] = logistic_l1_train(d.X_train, d.y_train, pars(n));
+    
+    % Evaluate on the test data set
+    predictions = sigmoid( d.X_test * w + c); 
+    
+    
+    % Transform predictions
+    %predictions(predictions < 0.5) = 0;
+    %predictions(predictions >= 0.5) = 1;
+    
+    %test_y(test_y==-1) = 0;
+    cp = classperf(d.y_test, predictions);
+    accuracies = [accuracies 1-cp.ErrorRate]
+end
+
