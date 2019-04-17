@@ -1,0 +1,46 @@
+D = load('USPS.mat');
+
+X = D.A;
+y = D.L;
+
+%A2 = reshape(X(2500,:), 16, 16);
+%imshow(A2');
+
+% Display first two reconstructed images
+for j=1:2
+    figure()
+    image = reshape(X_k(j,:), 16, 16);
+    imshow(image');
+    truesize([300 200]);
+    title(['Reconstructed Image for ' num2str(k) ' Components'])
+end
+
+num_comps = [10; 50; 100; 200];
+for i=1:size(num_comps,1)
+    k = num_comps(i)
+    % Center the data by subtracting the mean of the rows
+    X_c = X - mean(X,2);
+    
+    % Compute the SVD of the centered data matrix
+    [U,E,V] = svd(X_c);
+    
+    % Get coordinates in new basis
+    U_k = U(:, 1:k);
+    E_k = E(1:k,1:k);
+    V_k = V(:, 1:k);
+    X_k = U_k * E_k * V_k';
+    
+    % Display first two reconstructed images
+    for j=1:2
+        figure()
+        image = reshape(X_k(j,:), 16, 16);
+        imshow(image');
+        truesize([300 200]);
+        title(['Reconstructed Image for ' num2str(k) ' Components'])
+    end
+    
+    size(X_c)
+    size(X_k)
+    %size(V)
+    % t = (X_c == (U*E*V'));
+end
